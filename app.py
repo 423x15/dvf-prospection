@@ -4,6 +4,7 @@ import folium
 from streamlit_folium import st_folium
 import requests
 import math
+from datetime import date
 
 
 # ============================================================
@@ -214,7 +215,7 @@ nearby = df.filter(
     (pl.col("longitude") <= lon + delta_lon)
 )
 
-CURRENT_YEAR = 2026
+CURRENT_YEAR = date.today().year
 
 nearby = nearby.with_columns(
     (
@@ -359,7 +360,7 @@ folium.Circle(
 # MARKERS
 # ============================================================
 
-CURRENT_YEAR = 2026
+CURRENT_YEAR = date.today().year
 
 for row in nearby.iter_rows(named=True):
 
