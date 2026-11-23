@@ -98,7 +98,7 @@ def geocode(address):
 st.title("🏠 DVF Prospection")
 
 st.write(
-    f"{len(df):,} maisons avec historique de transaction."
+    f"{len(df):,} houses with recorded transactions."
 )
 
 
@@ -107,13 +107,13 @@ st.write(
 # ============================================================
 
 address = st.text_input(
-    "📍 Adresse à explorer",
-    placeholder="Ex : 10 rue Sainte-Catherine, Bordeaux",
+    "📍 Address",
+    placeholder="e.g. 10 rue Sainte-Catherine, Bordeaux",
 )
 
 
 radius = st.slider(
-    "Rayon de recherche",
+    "Search radius",
     min_value=0.5,
     max_value=10.0,
     value=2.0,
@@ -121,39 +121,35 @@ radius = st.slider(
     format="%.1f km",
 )
 
-st.sidebar.header("🎯 Filtres")
+st.sidebar.header("🎯 Filters")
 
-# Ancienneté minimale depuis la dernière vente
 min_age = st.sidebar.slider(
-    "Ancienneté minimale de détention",
+    "Min ownership duration",
     min_value=0,
     max_value=20,
     value=0,
     step=1,
-    format="%d ans",
+    format="%d yrs",
 )
 
-# Ancienneté maximale
 max_age = st.sidebar.slider(
-    "Ancienneté maximale de détention",
+    "Max ownership duration",
     min_value=1,
     max_value=30,
     value=30,
     step=1,
-    format="%d ans",
+    format="%d yrs",
 )
 
-# Prix minimum
 min_price = st.sidebar.number_input(
-    "Prix minimum de la dernière vente (€)",
+    "Min last sale price (€)",
     min_value=0,
     value=0,
     step=10000,
 )
 
-# Prix maximum
 max_price = st.sidebar.number_input(
-    "Prix maximum de la dernière vente (€)",
+    "Max last sale price (€)",
     min_value=0,
     value=2_000_000,
     step=10000,
@@ -162,7 +158,7 @@ max_price = st.sidebar.number_input(
 if not address:
 
     st.info(
-        "Entrez une adresse pour commencer."
+        "Enter an address to get started."
     )
 
     st.stop()
@@ -172,7 +168,7 @@ if not address:
 # GEOCODING
 # ============================================================
 
-with st.spinner("Recherche de l'adresse..."):
+with st.spinner("Geocoding address..."):
 
     location = geocode(address)
 
@@ -180,7 +176,7 @@ with st.spinner("Recherche de l'adresse..."):
 if location is None:
 
     st.error(
-        "Adresse introuvable."
+        "Address not found."
     )
 
     st.stop()
@@ -279,7 +275,7 @@ nearby = nearby.sort(
 # ============================================================
 
 st.subheader(
-    f"🏠 {len(nearby):,} maisons dans un rayon de {radius} km"
+    f"🏠 {len(nearby):,} houses within {radius} km"
 )
 
 
@@ -308,25 +304,25 @@ legend_html = """
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 ">
 
-<b>🏠 Ancienneté depuis la vente</b><br><br>
+<b>🏠 Years since last sale</b><br><br>
 
 <span style="color:green;">●</span>
-0–2 ans<br>
+0–2 yrs<br>
 
 <span style="color:blue;">●</span>
-2–4 ans<br>
+2–4 yrs<br>
 
 <span style="color:orange;">●</span>
-4–6 ans<br>
+4–6 yrs<br>
 
 <span style="color:red;">●</span>
-6–8 ans<br>
+6–8 yrs<br>
 
 <span style="color:purple;">●</span>
-8–10 ans<br>
+8–10 yrs<br>
 
 <span style="color:black;">●</span>
-+10 ans
+10+ yrs
 
 </div>
 """
@@ -338,7 +334,7 @@ m.get_root().html.add_child(
 
 folium.Marker(
     [lat, lon],
-    popup="Adresse recherchée",
+    popup="Search address",
     icon=folium.Icon(
         color="black",
         icon="home",
@@ -359,8 +355,6 @@ folium.Circle(
 # ============================================================
 # MARKERS
 # ============================================================
-
-CURRENT_YEAR = date.today().year
 
 for row in nearby.iter_rows(named=True):
 
@@ -411,25 +405,25 @@ for row in nearby.iter_rows(named=True):
 
     else:
 
-        price = "Inconnu"
+        price = "Unknown"
 
 
     popup = f"""
-    <b>Maison</b><br><br>
+    <b>House</b><br><br>
 
-    Dernière vente :
+    Last sale:
     {row["last_sale_date"]}<br>
 
-    Prix :
+    Price:
     {price}<br>
 
-    Ancienneté :
-    {age} ans<br>
+    Ownership:
+    {age} yrs<br>
 
-    Distance :
+    Distance:
     {row["distance_km"]:.2f} km<br>
 
-    Parcelle :
+    Plot:
     {row["l_idpar"]}
     """
 

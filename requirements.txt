@@ -1,6 +1,5 @@
-streamlit
-polars
-folium
-streamlit-folium
-requests
-pyproj
+streamlit>=1.38
+polars>=0.20
+folium>=0.17
+streamlit-folium>=0.22
+requests>=2.31
